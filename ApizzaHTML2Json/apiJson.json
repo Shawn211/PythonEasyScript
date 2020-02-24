@@ -1,0 +1,1540 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OneDrive系统API参考文档",
+    "version": "0.0.1",
+    "description": "OneDrive系统API接口文档"
+  },
+  "paths": {
+    "//login.microsoftonline.com/{tenant}/adminconsent": {
+      "parameters": [
+        {
+          "name": "tenant",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "允许的值为适用于 Microsoft 帐户和工作或学校帐户的 common、仅适用于工作或学校帐户的 organizations、仅适用于 Microsoft 帐户的 consumers 以及租户标识符（如租户 ID 或域名）"
+        }
+      ],
+      "get": {
+        "summary": "获取管理员同意",
+        "tags": [
+          "授权模块无用户访问"
+        ],
+        "description": "\nGET https://localhost/myapp/permissions?tenant=a8990e1f-ff32-408a-9f8e-78d3b9139b95&state=12345&admin_consent=True",
+        "responses": {},
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "注册应用时由 Azure 应用注册门户分配的应用程序 ID"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "必须完全匹配你在应用注册门户中注册的 redirect_uris 之一，除了它必须采用 URL 编码"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "请求中包含的值将在令牌响应中返回"
+          }
+        ]
+      }
+    },
+    "//login.microsoftonline.com/{tenant}/oauth2/v2.0/token": {
+      "parameters": [
+        {
+          "name": "tenant",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "允许的值为适用于 Microsoft 帐户和工作或学校帐户的 common、仅适用于工作或学校帐户的 organizations、仅适用于 Microsoft 帐户的 consumers 以及租户标识符（如租户 ID 或域名）"
+        }
+      ],
+      "post": {
+        "summary": "获取访问令牌",
+        "tags": [
+          "授权模块无用户访问"
+        ],
+        "description": "在 OAuth 2.0 客户端凭据授予流中，可使用在注册应用时保存的应用程序 ID 和应用程序密码值直接从 Microsoft 标识平台 /token 终结点请求访问令牌。\n你可以通过传递 https://graph.microsoft.com/.default 并将其作为令牌请求中 scope 参数的值来指定预配置的权限。",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "token_type": "Bearer",
+                      "expires_in": 3599,
+                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1uQ19WWmNBVGZNNXBP..."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "注册应用时由 Azure 应用注册门户分配的应用程序 ID"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "由空格分隔的希望用户同意的 Microsoft Graph 权限列表"
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "你在应用注册门户中为应用创建的应用程序密码"
+          },
+          {
+            "name": "grant_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "必须是 client_credentials"
+          }
+        ]
+      }
+    },
+    "//login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize": {
+      "parameters": [
+        {
+          "name": "tenant",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "允许的值为适用于 Microsoft 帐户和工作或学校帐户的 common、仅适用于工作或学校帐户的 organizations、仅适用于 Microsoft 帐户的 consumers 以及租户标识符（如租户 ID 或域名）"
+        }
+      ],
+      "get": {
+        "summary": "获取授权",
+        "tags": [
+          "授权模块代表用户获取访问权限"
+        ],
+        "description": "\nGET https://localhost/myapp/?code=M0ab92efe-b6fd-df08-87dc-2c6500a7f84d&state=12345",
+        "responses": {},
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "注册门户分配给应用的应用程序 ID"
+          },
+          {
+            "name": "response_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "必须包括授权代码流的 code"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "必须完全匹配你在应用注册门户中注册的 redirect_uris 之一，除了它必须采用 URL 编码"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "由空格分隔的希望用户同意的 Microsoft Graph 权限列表"
+          },
+          {
+            "name": "response_mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "指定用于将结果令牌发送回应用的方法，可以是 query 或 form_post"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "请求中包含的值将在令牌响应中返回"
+          }
+        ]
+      }
+    },
+    "/{tenant}/oauth2/v2.0/token": {
+      "parameters": [
+        {
+          "name": "tenant",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "允许的值为适用于 Microsoft 帐户和工作或学校帐户的 common、仅适用于工作或学校帐户的 organizations、仅适用于 Microsoft 帐户的 consumers 以及租户标识符（如租户 ID 或域名）"
+        }
+      ],
+      "post": {
+        "summary": "获取令牌",
+        "tags": [
+          "授权模块代表用户获取访问权限"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "token_type": "Bearer",
+                      "scope": "user.read Fmail.read",
+                      "expires_in": 3600,
+                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik5HVEZ2ZEstZnl0aEV1Q...",
+                      "refresh_token": "AwABAAAAvPM1KaPlrEqdFSBzjqfTGAMxZGUTdM0t4B4..."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "注册门户分配给应用的应用程序 ID"
+          },
+          {
+            "name": "grant_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "对于授权代码流必须为 authorization_code"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "由空格分隔的希望用户同意的 Microsoft Graph 权限列表"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "你在流程的第一个图例中获得的 authorization_code"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "用于获取 authorization_code 的相同的 redirect_uri 值"
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "你在应用注册门户中为应用创建的应用程序密码"
+          }
+        ]
+      }
+    },
+    "/common/oauth2/v2.0/token": {
+      "post": {
+        "summary": "使用此刷新令牌获取新的访问令牌",
+        "tags": [
+          "授权模块代表用户获取访问权限"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik5HVEZ2ZEstZnl0aEV1Q...",
+                      "token_type": "Bearer",
+                      "expires_in": 3599,
+                      "scope": "user.read mail.read",
+                      "refresh_token": "AwABAAAAvPM1KaPlrEqdFSBzjqfTGAMxZGUTdM0t4B4..."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "注册门户分配给应用的应用程序 ID"
+          },
+          {
+            "name": "grant_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "必须是 refresh_token"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "由空格分隔的希望用户同意的 Microsoft Graph 权限列表"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "你在流程的第一个图例中获得的 authorization_code"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "用于获取 authorization_code 的相同的 redirect_uri 值"
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "你在应用注册门户中为应用创建的应用程序密码"
+          }
+        ]
+      }
+    },
+    "/users": {
+      "post": {
+        "summary": "创建用户",
+        "tags": [
+          "用户"
+        ],
+        "description": "创建新用户",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+                      "id": "id-value",
+                      "businessPhones": [],
+                      "displayName": "displayName-value",
+                      "givenName": null,
+                      "jobTitle": null,
+                      "mail": null,
+                      "mobilePhone": null,
+                      "officeLocation": null,
+                      "preferredLanguage": null,
+                      "surname": null,
+                      "userPrincipalName": "upn-value@tenant-value.onmicrosoft.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountEnabled": {
+                    "type": "boolean",
+                    "description": "启用此帐户时为 true，否则为 false"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "description": "要在用户的通讯簿中显示的名称"
+                  },
+                  "onPremisesImmutableId": {
+                    "type": "string",
+                    "description": "如果你对用户的 userPrincipalName (UPN) 属性使用联盟域，只需在创建新用户帐户时指定"
+                  },
+                  "mailNickname": {
+                    "type": "string",
+                    "description": "用户的邮件别名"
+                  },
+                  "passwordProfile": {
+                    "type": "object",
+                    "description": "用户的密码配置文件"
+                  },
+                  "userPrincipalName": {
+                    "type": "string",
+                    "description": "用户主体名称 (someuser@contoso.com)"
+                  }
+                },
+                "required": [
+                  "accountEnabled",
+                  "displayName",
+                  "onPremisesImmutableId",
+                  "mailNickname",
+                  "passwordProfile",
+                  "userPrincipalName"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "列出用户",
+        "tags": [
+          "用户"
+        ],
+        "description": "检索 user 对象列表",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "value": [
+                        {
+                          "businessPhones": [
+                            "businessPhones-value"
+                          ],
+                          "displayName": "displayName-value",
+                          "givenName": "givenName-value",
+                          "jobTitle": "jobTitle-value",
+                          "mail": "mail-value",
+                          "mobilePhone": "mobilePhone-value",
+                          "officeLocation": "officeLocation-value",
+                          "preferredLanguage": "preferredLanguage-value",
+                          "surname": "surname-value",
+                          "userPrincipalName": "userPrincipalName-value",
+                          "id": "id-value"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}|{userPrincipalName}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "用户的唯一标识符"
+        },
+        {
+          "name": "userPrincipalName",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "用户的用户主体名称 (UPN)"
+        }
+      ],
+      "delete": {
+        "summary": "删除用户",
+        "tags": [
+          "用户"
+        ],
+        "description": "删除用户",
+        "responses": {}
+      },
+      "get": {
+        "summary": "获取用户",
+        "tags": [
+          "用户"
+        ],
+        "description": "检索用户对象的属性和关系",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "businessPhones": [
+                        "businessPhones-value"
+                      ],
+                      "displayName": "displayName-value",
+                      "givenName": "givenName-value",
+                      "jobTitle": "jobTitle-value",
+                      "mail": "mail-value",
+                      "mobilePhone": "mobilePhone-value",
+                      "officeLocation": "officeLocation-value",
+                      "preferredLanguage": "preferredLanguage-value",
+                      "surname": "surname-value",
+                      "userPrincipalName": "userPrincipalName-value",
+                      "id": "id-value"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "更新用户",
+        "tags": [
+          "用户"
+        ],
+        "description": "更新 user 对象的属性",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "aboutMe": {
+                    "type": "string",
+                    "description": "任意形式的文本输入字段，用于介绍用户自身。任意形式的文本输入字段，用于介绍用户自身。任意形式的文本输入字段，用于介绍用户自身。"
+                  },
+                  "accountEnabled": {
+                    "type": "boolean",
+                    "description": "启用帐户时为 true，否则为 false。 创建用户时此属性是必需的。启用帐户时为 true，否则为 false。 创建用户时此属性是必需的。启用帐户时为 true，否则为 false。 创建用户时此属性是必需的。"
+                  },
+                  "birthday": {
+                    "type": "datetime",
+                    "description": "用户的生日。时间戳类型表示使用 ISO 8601 格式的日期和时间信息，并且始终处于 UTC 时间。例如，2014 年 1 月 1 日午夜 UTC 如下所示：'2014-01-01T00:00:00Z'用户的生日。时间戳类型表示使用 ISO 8601 格式的日期和时间信息，并且始终处于 UTC 时间。例如，2014 年 1 月 1 日午夜 UTC 如下所示：'2014-01-01T00:00:00Z'用户的生日。时间戳类型表示使用 ISO 8601 格式的日期和时间信息，并且始终处于 UTC 时间。例如，2014 年 1 月 1 日午夜 UTC 如下所示：'2014-01-01T00:00:00Z'"
+                  },
+                  "businessPhones": {
+                    "type": "array",
+                    "description": "用户的电话号码。注意：虽然这是字符串集合，但是只能为该属性设置一个号码。用户的电话号码。注意：虽然这是字符串集合，但是只能为该属性设置一个号码。用户的电话号码。注意：虽然这是字符串集合，但是只能为该属性设置一个号码。"
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "用户所在的城市。"
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "用户所在的国家/地区；例如，“美国”或“英国”。"
+                  },
+                  "department": {
+                    "type": "string",
+                    "description": "用户工作部门的名称。"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "description": "用户通讯簿中显示的名称。这通常是用户名字、中间名首字母和姓氏的组合。此属性在创建用户时是必需的，并且在更新过程中不能清除。支持 $filter 和 $orderby。"
+                  },
+                  "givenName": {
+                    "type": "string",
+                    "description": "用户的名。"
+                  },
+                  "hireDate": {
+                    "type": "datetime",
+                    "description": "用户的雇佣日期。时间戳类型表示使用 ISO 8601 格式的日期和时间信息，并且始终处于 UTC 时间。例如，2014 年 1 月 1 日午夜 UTC 如下所示：'2014-01-01T00:00:00Z'"
+                  },
+                  "interests": {
+                    "type": "array",
+                    "description": "用户介绍自身兴趣的列表。"
+                  },
+                  "jobTitle": {
+                    "type": "string",
+                    "description": "用户的职务。"
+                  },
+                  "mailNickname": {
+                    "type": "string",
+                    "description": "用户的邮件别名。 创建用户时必须指定此属性。"
+                  },
+                  "mobilePhone": {
+                    "type": "string",
+                    "description": "用户的主要移动电话号码。"
+                  },
+                  "mySite": {
+                    "type": "string",
+                    "description": "用户个人网站的 URL。"
+                  },
+                  "officeLocation": {
+                    "type": "string",
+                    "description": "用户公司地点的办公室位置。用户公司地点的办公室位置。"
+                  },
+                  "onPremisesImmutableId": {
+                    "type": "string",
+                    "description": "此属性用于将本地 Active Directory 用户帐户关联到他们的 Azure AD 用户对象。 如果对用户的 userPrincipalName (UPN) 属性使用联盟域，必须在创建新用户帐户时指定此属性。 重要说明： 指定此属性时不能使用 $ 和 _ 字符。"
+                  },
+                  "otherMails": {
+                    "type": "string",
+                    "description": "用户的其他电子邮件地址列表；例如：[\"bob@contoso.com\", \"Robert@fabrikam.com\"]。"
+                  },
+                  "passwordPolicies": {
+                    "type": "string",
+                    "description": "指定用户的密码策略。此值是一个枚举，具有一个可能值“DisableStrongPassword”，允许指定比默认策略弱的密码。还可以指定“DisablePasswordExpiration”。可以同时指定这两个策略；例如：“DisablePasswordExpiration、DisableStrongPassword”。"
+                  },
+                  "passwordProfile": {
+                    "type": "object",
+                    "description": "指定用户的密码配置文件。配置文件包含用户的密码。创建用户时此属性是必需的。配置文件中的密码必须满足 passwordPolicies 属性指定的最低要求。默认情况下，必须使用强密码。"
+                  },
+                  "pastProjects": {
+                    "type": "array",
+                    "description": "供用户枚举其过去项目的列表。"
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "description": "用户邮政地址的邮政编码。邮政编码特定于用户所在的国家/地区。在美国，此属性包含邮政编码。"
+                  },
+                  "preferredLanguage": {
+                    "type": "string",
+                    "description": "用户的首选语言。应遵循 ISO 639-1 代码；例如“EN-US”。"
+                  },
+                  "responsibilities": {
+                    "type": "array",
+                    "description": "供用户枚举其职责的列表。"
+                  },
+                  "schools": {
+                    "type": "array",
+                    "description": "供用户枚举其学习过的学校列表。"
+                  },
+                  "skills": {
+                    "type": "array",
+                    "description": "供用户枚举其技能的列表。"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "用户地址中的省/市/自治区或省。"
+                  },
+                  "streetAddress": {
+                    "type": "string",
+                    "description": "用户公司地点的街道地址。"
+                  },
+                  "surname": {
+                    "type": "string",
+                    "description": "用户的姓氏。"
+                  },
+                  "usageLocation": {
+                    "type": "string",
+                    "description": "两个字母的国家/地区代码（ISO 标准 3166）。 为检查服务在国家/地区的可用性，这对根据法律要求将分配许可证的用户而言是必需的。 示例包括：“US”、“JP”和“GB”。 不可为 null。"
+                  },
+                  "userPrincipalName": {
+                    "type": "string",
+                    "description": "用户的用户主体名称 (UPN)。UPN 是用户基于 Internet 标准 RFC 822 的 Internet 式登录名。按照惯例，此名称应映射到用户的电子邮件名称。常规格式是 alias@domain，其中，domain 必须位于租户的已验证域集合中。创建用户时此属性是必需的。可从 组织 的 verifiedDomains 属性访问租户的已验证域。支持 $filter 和 $orderby。"
+                  },
+                  "userType": {
+                    "type": "string",
+                    "description": "可用于对目录中的用户类型分类的字符串值，例如“成员”和“访客”。"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups": {
+      "post": {
+        "summary": "创建组",
+        "tags": [
+          "组"
+        ],
+        "description": "创建请求正文中指定的新组",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "id": "b320ee12-b1cd-4cca-b648-a437be61c5cd",
+                      "deletedDateTime": null,
+                      "classification": null,
+                      "createdDateTime": "2018-12-22T00:51:37Z",
+                      "creationOptions": [],
+                      "description": "Self help community for library",
+                      "displayName": "Library Assist",
+                      "groupTypes": [
+                        "Unified"
+                      ],
+                      "mail": "library7423@contoso.com",
+                      "mailEnabled": true,
+                      "mailNickname": "library",
+                      "onPremisesLastSyncDateTime": null,
+                      "onPremisesSecurityIdentifier": null,
+                      "onPremisesSyncEnabled": null,
+                      "preferredDataLocation": "CAN",
+                      "proxyAddresses": [
+                        "SMTP:library7423@contoso.com"
+                      ],
+                      "renewedDateTime": "2018-12-22T00:51:37Z",
+                      "resourceBehaviorOptions": [],
+                      "resourceProvisioningOptions": [],
+                      "securityEnabled": false,
+                      "visibility": "Public",
+                      "onPremisesProvisioningErrors": []
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "type": "string",
+                    "description": "要在组的通讯簿中显示的名称"
+                  },
+                  "mailEnabled": {
+                    "type": "boolean",
+                    "description": "对于已启用邮件的组，请设置为 true"
+                  },
+                  "mailNickname": {
+                    "type": "string",
+                    "description": "组的邮件别名"
+                  },
+                  "securityEnabled": {
+                    "type": "boolean",
+                    "description": "对于启用安全机制的组（包括 Office 365 组），请设置为 true"
+                  },
+                  "owners": {
+                    "type": "array",
+                    "description": "此属性表示创建时指定的组所有者"
+                  },
+                  "members": {
+                    "type": "array",
+                    "description": "此属性表示创建时指定的组成员"
+                  }
+                },
+                "required": [
+                  "displayName",
+                  "mailEnabled",
+                  "mailNickname",
+                  "securityEnabled"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "列出组",
+        "tags": [
+          "组"
+        ],
+        "description": "列出组织中的所有组，包括但不限于 Office 365 组",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#groups",
+                      "value": [
+                        {
+                          "id": "45b7d2e7-b882-4a80-ba97-10b7a63b8fa4",
+                          "deletedDateTime": null,
+                          "classification": null,
+                          "createdDateTime": "2018-12-22T02:21:05Z",
+                          "creationOptions": [],
+                          "description": "Self help community for golf",
+                          "displayName": "Golf Assist",
+                          "groupTypes": [
+                            "Unified"
+                          ],
+                          "mail": "golfassist@contoso.com",
+                          "mailEnabled": true,
+                          "mailNickname": "golfassist",
+                          "onPremisesLastSyncDateTime": null,
+                          "onPremisesSecurityIdentifier": null,
+                          "onPremisesSyncEnabled": null,
+                          "preferredDataLocation": "CAN",
+                          "proxyAddresses": [
+                            "smtp:golfassist@contoso.onmicrosoft.com",
+                            "SMTP:golfassist@contoso.com"
+                          ],
+                          "renewedDateTime": "2018-12-22T02:21:05Z",
+                          "resourceBehaviorOptions": [],
+                          "resourceProvisioningOptions": [],
+                          "securityEnabled": false,
+                          "visibility": "Public",
+                          "onPremisesProvisioningErrors": []
+                        },
+                        {
+                          "id": "d7797254-3084-44d0-99c9-a3b5ab149538",
+                          "deletedDateTime": null,
+                          "classification": null,
+                          "createdDateTime": "2018-11-19T20:29:40Z",
+                          "creationOptions": [],
+                          "description": "Talk about golf",
+                          "displayName": "Golf Discussion",
+                          "groupTypes": [],
+                          "mail": "golftalk@contoso.com",
+                          "mailEnabled": true,
+                          "mailNickname": "golftalk",
+                          "onPremisesLastSyncDateTime": null,
+                          "onPremisesSecurityIdentifier": null,
+                          "onPremisesSyncEnabled": null,
+                          "preferredDataLocation": "CAN",
+                          "proxyAddresses": [
+                            "smtp:golftalk@contoso.onmicrosoft.com",
+                            "SMTP:golftalk@contoso.com"
+                          ],
+                          "renewedDateTime": "2018-11-19T20:29:40Z",
+                          "resourceBehaviorOptions": [],
+                          "resourceProvisioningOptions": [],
+                          "securityEnabled": false,
+                          "visibility": null,
+                          "onPremisesProvisioningErrors": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "delete": {
+        "summary": "删除组",
+        "tags": [
+          "组"
+        ],
+        "description": "删除组",
+        "responses": {}
+      },
+      "get": {
+        "summary": "获取组",
+        "tags": [
+          "组"
+        ],
+        "description": "获取组对象的属性和关系",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "id": "b320ee12-b1cd-4cca-b648-a437be61c5cd",
+                      "deletedDateTime": null,
+                      "classification": null,
+                      "createdDateTime": "2018-12-22T00:51:37Z",
+                      "creationOptions": [],
+                      "description": "Self help community for library",
+                      "displayName": "Library Assist",
+                      "groupTypes": [
+                        "Unified"
+                      ],
+                      "mail": "library2@contoso.com",
+                      "mailEnabled": true,
+                      "mailNickname": "library",
+                      "onPremisesLastSyncDateTime": null,
+                      "onPremisesSecurityIdentifier": null,
+                      "onPremisesSyncEnabled": null,
+                      "preferredDataLocation": "CAN",
+                      "proxyAddresses": [
+                        "smtp:library7423@contoso.com",
+                        "SMTP:library2@contoso.com"
+                      ],
+                      "renewedDateTime": "2018-12-22T00:51:37Z",
+                      "resourceBehaviorOptions": [],
+                      "resourceProvisioningOptions": [],
+                      "securityEnabled": false,
+                      "visibility": "Public",
+                      "onPremisesProvisioningErrors": []
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "更新组",
+        "tags": [
+          "组"
+        ],
+        "description": "更新 group 对象的属性",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "allowExternalSenders": {
+                    "type": "boolean",
+                    "description": "默认为 false，指明组织外部人员能否向群组发送邮件"
+                  },
+                  "autoSubscribeNewMembers": {
+                    "type": "boolean",
+                    "description": "默认为 false，指示添加到组中的新成员是否将自动订阅接收电子邮件通知"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "可选的组说明"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "description": "组的显示名称。此属性是在创建组时所必需的，并且在更新过程中不能清除"
+                  },
+                  "groupTypes": {
+                    "type": "array",
+                    "description": "指定组类型及其成员身份"
+                  },
+                  "mailEnabled": {
+                    "type": "boolean",
+                    "description": "指定是否为启用邮件的组"
+                  },
+                  "mailNickname": {
+                    "type": "string",
+                    "description": "组的邮件别名"
+                  },
+                  "securityEnabled": {
+                    "type": "boolean",
+                    "description": "指定是否为安全组"
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "description": "指定 Office 365 组的可见性"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups/{id}/owners/$ref": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "post": {
+        "summary": "添加所有者",
+        "tags": [
+          "组"
+        ],
+        "description": "将用户添加到组所有者",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "@odata.id": {
+                    "type": "string",
+                    "description": "用作此对象的唯一标识符的 Guid"
+                  }
+                },
+                "required": [
+                  "@odata.id"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups/{id}/owners/{id}/$ref": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "delete": {
+        "summary": "删除所有者",
+        "tags": [
+          "组"
+        ],
+        "description": "使用此 API 可以通过 owners 导航属性从 Office 365 组、安全组或启用邮件的安全组中删除所有者",
+        "responses": {}
+      }
+    },
+    "/groups/{id}/owners": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "get": {
+        "summary": "列出所有者",
+        "tags": [
+          "组"
+        ],
+        "description": "检索组的所有者列表",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "value": [
+                        {
+                          "@odata.type": "#microsoft.graph.user"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups/{id}/members/$ref": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "post": {
+        "summary": "添加成员",
+        "tags": [
+          "组"
+        ],
+        "description": "通过 members 导航属性将成员添加到 Office 365 组或安全组中",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "@odata.id": {
+                    "type": "string",
+                    "description": "用作此对象的唯一标识符的 Guid"
+                  }
+                },
+                "required": [
+                  "@odata.id"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups/{id}/members/{id}/$ref": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "delete": {
+        "summary": "删除成员",
+        "tags": [
+          "组"
+        ],
+        "description": "",
+        "responses": {}
+      }
+    },
+    "/groups/{id}/members": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "组的唯一标识符"
+        }
+      ],
+      "get": {
+        "summary": "列出成员",
+        "tags": [
+          "组"
+        ],
+        "description": "获取组的直接成员列表",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "value": [
+                        {
+                          "id": "id-value"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drives/{drive-id}/items/{parent-item-id}/children": {
+      "parameters": [
+        {
+          "name": "drive-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "驱动器id"
+        },
+        {
+          "name": "parent-item-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "项目父id"
+        }
+      ],
+      "post": {
+        "summary": "创建文件夹",
+        "tags": [
+          "文件管理系统"
+        ],
+        "description": "在驱动器中新建文件夹",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "createdBy": {
+                        "user": {
+                          "displayName": "Ryan Gregg",
+                          "id": "309EC495-3E92-431D-9124-F0299633171D"
+                        }
+                      },
+                      "createdDateTime": "2016-09-20T14:34:00Z",
+                      "eTag": "343F1FBD-E9B3-4DDE-BCA7-D61AEAFF44E5,1",
+                      "id": "ACEA49D1-1444-45A9-A1CB-68B1B28AE491",
+                      "lastModifiedBy": {
+                        "user": {
+                          "displayName": "Ryan Gregg",
+                          "id": "309EC495-3E92-431D-9124-F0299633171D"
+                        }
+                      },
+                      "lastModifiedDateTime": "2016-09-20T14:34:00Z",
+                      "name": "New Folder",
+                      "parentReference": {
+                        "driveId": "5FE38E3C-051C-4D55-9B83-8A437658275B",
+                        "id": "E67A8F34-B0AA-46E1-8FF7-0750A29553DF",
+                        "path": "/drive/root:/"
+                      },
+                      "size": 0,
+                      "folder": {
+                        "childCount": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "副本的新名称"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drives/{drive-id}/items/{item-id}": {
+      "parameters": [
+        {
+          "name": "drive-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "驱动器id"
+        },
+        {
+          "name": "item-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "项目id"
+        }
+      ],
+      "delete": {
+        "summary": "删除项目",
+        "tags": [
+          "文件管理系统"
+        ],
+        "description": "",
+        "responses": {}
+      },
+      "patch": {
+        "summary": "移动项目",
+        "tags": [
+          "文件管理系统"
+        ],
+        "description": "将 DriveItem 移动到一个新的文件夹",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "id": "0123456789abc",
+                      "name": "new-item-name.txt",
+                      "parentReference": {
+                        "driveId": "11231001",
+                        "path": "/drive/root:/Documents",
+                        "id": "1231203102!1011"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "parentReference": {
+                    "type": "object",
+                    "description": "引用在其中创建副本的父项，应包括目标文件夹的 id 参数"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "副本的新名称。如果未提供新名称，将同一名称用作原始名称"
+                  }
+                },
+                "required": [
+                  "parentReference"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drives/{drive-id}/items/{item-id}/content": {
+      "parameters": [
+        {
+          "name": "drive-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "驱动器id"
+        },
+        {
+          "name": "item-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "项目id"
+        }
+      ],
+      "get": {
+        "summary": "下载文件",
+        "tags": [
+          "文件管理系统"
+        ],
+        "description": "下载 DriveItem 的内容",
+        "responses": {}
+      }
+    },
+    "/drives/{drive-id}/items/{item-id}/children": {
+      "parameters": [
+        {
+          "name": "drive-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "驱动器id"
+        },
+        {
+          "name": "item-id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "项目id"
+        }
+      ],
+      "get": {
+        "summary": "列出子项",
+        "tags": [
+          "文件管理系统"
+        ],
+        "description": "列出 DriveItem 的子项",
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "请求成功范例": {
+                    "value": {
+                      "value": [
+                        {
+                          "name": "myfile.jpg",
+                          "size": 2048,
+                          "file": {}
+                        },
+                        {
+                          "name": "Documents",
+                          "folder": {
+                            "childCount": 4
+                          }
+                        },
+                        {
+                          "name": "Photos",
+                          "folder": {
+                            "childCount": 203
+                          }
+                        },
+                        {
+                          "name": "my sheet(1).xlsx",
+                          "size": 197
+                        }
+                      ],
+                      "@odata.nextLink": "https://..."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drives/{driveId}/items/{itemId}/copy": {
+      "parameters": [
+        {
+          "name": "driveId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "驱动器id"
+        },
+        {
+          "name": "itemId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "项目id"
+        }
+      ],
+      "post": {
+        "summary": "复制项目",
+        "tags": [
+          "文件管理系统"
+        ],
+        "description": "复制 DriveItem",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "parentReference": {
+                    "type": "object",
+                    "description": "引用在其中创建副本的父项，应包括目标文件夹的 driveId 和 id 参数"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "副本的新名称。如果未提供新名称，将同一名称用作原始名称"
+                  }
+                },
+                "required": [
+                  "parentReference"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
