@@ -1,0 +1,2 @@
+# PythonEasyScript
+收集鄙人日常生活中所遇可自动化操作的事件而开发的基于Python3的简易脚本
