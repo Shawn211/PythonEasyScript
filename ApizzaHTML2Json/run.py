@@ -4,10 +4,11 @@ import json
 
 # 初始化参数
 filename = 'OneDrive系统.html'
-openApi = '3.0.0'
 info_title = 'OneDrive系统API参考文档'
-info_version = '0.0.1'
 info_description = 'OneDrive系统API接口文档'
+
+openApi = '3.0.0'
+info_version = '0.0.1'
 
 pathsJson = {}
 
@@ -38,24 +39,49 @@ for tagName in all_api_dict:
         parameters = {
             "pathParameters": [],
             "queryParameters": [],
-            "bodyParameters": []
+            "bodyParameters": [],
+            "responseSchemaParameters": []
         }
         tables = api.xpath('table')
         for table in tables:
             for parameter in table.xpath('tbody/tr'):
-                paramIn = re.sub('参数名', '', table.xpath('thead/tr/th/span/text()')[0]).lower() \
-                    if 'inParam' not in parameter.xpath('td[4]/text()')[0] else 'path'
-                parameters[f'{paramIn}Parameters'].append({
-                    "name": parameter.xpath('td[1]/text()')[0],
-                    # "in": re.sub('参数名', '', table.xpath('thead/tr/th/span/text()')[0]).lower(),
-                    "in": paramIn,
-                    "required": True if '是' in parameter.xpath('td[3]/text()')[0] else False,
-                    "schema": {
-                        "type": parameter.xpath('td[2]/text()')[0]
-                    },
-                    # "description": parameter.xpath('td[4]/text()')[0]
-                    "description": re.sub('inParam', '', parameter.xpath('td[4]/text()')[0])
-                })
+                paramIn = None
+                if table.xpath('thead/tr/th/span/text()')[0] == '参数名':
+                    paramIn = 'responseSchema'
+                elif parameter.xpath('td[4]/text()') and 'inParam' in parameter.xpath('td[4]/text()')[0]:
+                    paramIn = 'path'
+                else:
+                    paramIn = re.sub('参数名', '', table.xpath('thead/tr/th/span/text()')[0]).lower()
+                if paramIn == 'responseSchema':
+                    schema_name_list = parameter.xpath('td[1]/text()')
+                    schema_description_list = parameter.xpath('td[2]/text()')
+                    schema_type = parameter.xpath('th[1]/text()')[0]
+                    formatted_parameter = {'type': schema_type}
+                    if schema_name_list:
+                        formatted_parameter['name'] = schema_name_list[0]
+                    if schema_description_list:
+                        formatted_parameter['description'] = schema_description_list[0]
+                    parameters[f'{paramIn}Parameters'].append(formatted_parameter)
+                else:
+                    parameter_name_list = parameter.xpath('td[1]/text()')
+                    # parameter_in = re.sub('参数名', '', table.xpath('thead/tr/th/span/text()')[0]).lower()
+                    parameter_in = paramIn
+                    parameter_required = parameter.xpath('td[3]/text()')[0]
+                    parameter_type = parameter.xpath('td[2]/text()')[0]
+                    parameter_description_list = parameter.xpath('td[4]/text()')
+                    formatted_parameter = {
+                        'in': parameter_in,
+                        'required': True if '是' in parameter_required else False,
+                        'schema': {
+                            'type': parameter_type
+                        }
+                    }
+                    if parameter_name_list:
+                        formatted_parameter['name'] = parameter_name_list[0]
+                    if parameter_description_list:
+                        # formatted_parameter['description'] = parameter_description_list[0]
+                        formatted_parameter['description'] = re.sub('inParam', '', parameter_description_list[0])
+                    parameters[f'{paramIn}Parameters'].append(formatted_parameter)
         if 'parameters' not in pathsJson[url] and len(parameters['pathParameters']):
             pathsJson[url] = {
                 "parameters": parameters['pathParameters']
@@ -76,7 +102,7 @@ for tagName in all_api_dict:
                     "type": param['schema']['type'],
                     "description": param['description']
                 }
-                if param['required']:
+                if 'required' in param:
                     required.append(param['name'])
             pathsJson[url][method]['requestBody'] = {
                 "content": {
@@ -90,22 +116,34 @@ for tagName in all_api_dict:
             }
             if required:
                 pathsJson[url][method]['requestBody']['content']['application/json']['schema']['required'] = required
-        code = api.xpath('div[@class="highlight"]//code/text()')
-        if code:
+        examples = api.xpath('div[@class="highlight"]//code/text()')
+        if len(parameters["responseSchemaParameters"]) or examples:
             pathsJson[url][method]['responses'] = {
                 "200": {
                     "description": "请求成功",
                     "content": {
-                        "application/json": {
-                            "examples": {
-                                "请求成功范例": {
-                                    "value": json.loads(code[0])
-                                }
-                            }
-                        }
+                        "application/json": {}
                     }
                 }
             }
+            if len(parameters["responseSchemaParameters"]):
+                properties = {}
+                for param in parameters["responseSchemaParameters"]:
+                    properties[param['name']] = {}
+                    if 'type' in param:
+                        properties[param['name']]['type'] = param['type']
+                    if 'description' in param:
+                        properties[param['name']]['description'] = param['description']
+                pathsJson[url][method]['responses']['200']['content']['application/json']['schema'] = {
+                    "type": "object",
+                    "properties": properties
+                }
+            if examples:
+                pathsJson[url][method]['responses']['200']['content']['application/json']['examples'] = {
+                    "请求成功范例": {
+                        "value": json.loads(examples[0])
+                    }
+                }
 
 apiJson = {
     "openapi": openApi,
