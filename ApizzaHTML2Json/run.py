@@ -102,7 +102,7 @@ for tagName in all_api_dict:
                     "type": param['schema']['type'],
                     "description": param['description']
                 }
-                if 'required' in param:
+                if 'required' in param and param['required']:
                     required.append(param['name'])
             pathsJson[url][method]['requestBody'] = {
                 "content": {
