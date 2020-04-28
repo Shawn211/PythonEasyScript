@@ -35,7 +35,7 @@ for tagName in all_api_dict:
             break
         descriptions = [re.sub(r'\n\s*', '', p.text) if p.text else '' for p in
                         api.xpath('div[@class="detail-info"]//p')]
-        description = '\n'.join(descriptions)
+        description = '\n\n'.join(descriptions)
         parameters = {
             "pathParameters": [],
             "queryParameters": [],
